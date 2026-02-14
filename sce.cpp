@@ -355,7 +355,7 @@ void _sce_fixup_ctxt(sce_buffer_ctxt_t *ctxt)
 	u32 i = 0, base_off, last_off;
 
 	//Set section info data.
-	base_off = ctxt->sceh->header_len;
+	base_off = (u32)ctxt->sceh->header_len;
 	LIST_FOREACH(iter, ctxt->secs)
 	{
 		//Save last offset.

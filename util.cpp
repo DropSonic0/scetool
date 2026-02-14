@@ -54,7 +54,7 @@ u8 *_read_buffer(const s8 *file, u32 *length)
 		return NULL;
 
 	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
+	size = (u32)ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	u8 *buffer = (u8 *)malloc(sizeof(u8) * size);

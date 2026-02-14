@@ -221,7 +221,7 @@ BOOL np_sign_file(s8 *fname)
 		return FALSE;
 
 	fseek(fp, 0, SEEK_END);
-	length = ftell(fp);
+	length = (u32)ftell(fp);
 
 	padding = length % 0x10;
 	if(padding > 0)
