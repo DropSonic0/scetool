@@ -15,6 +15,14 @@ You will need to provide `zlib.lib`. You can:
 - Use NuGet to install a zlib package.
 - Manually download/build zlib and add its path to the project's **Library Directories**.
 
+### How to build zlib manually for scetool:
+1. Download zlib source from [zlib.net](https://zlib.net/).
+2. Open the **correct** Visual Studio terminal:
+   - For **x64**: "x64 Native Tools Command Prompt for VS 2019".
+   - For **x86**: "x86 Native Tools Command Prompt for VS 2019".
+3. Navigate to zlib folder and run: `nmake -f win32/Makefile.msc`.
+4. Copy the resulting `zlib.lib` to the `scetool` root folder.
+
 ## Configuration
 
 The project supports:

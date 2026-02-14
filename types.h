@@ -21,6 +21,7 @@ typedef unsigned int u32;
 #define strdup _strdup
 #define access _access
 #define fseek _fseeki64
+#define ftell _ftelli64
 typedef __int64 s64;
 typedef unsigned __int64 u64;
 #else
