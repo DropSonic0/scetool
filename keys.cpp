@@ -111,12 +111,12 @@ static void _fill_property(keyset_t *ks, s8 *prop, s8 *value)
 	else if(strcmp(prop, "erk") == 0 || strcmp(prop, "key") == 0)
 	{
 		ks->erk = _x_to_u8_buffer(value);
-		ks->erklen = strlen(value) / 2;
+		ks->erklen = (u32)(strlen(value) / 2);
 	}
 	else if(strcmp(prop, "riv") == 0)
 	{
 		ks->riv = _x_to_u8_buffer(value);
-		ks->rivlen = strlen(value) / 2;
+		ks->rivlen = (u32)(strlen(value) / 2);
 	}
 	else if(strcmp(prop, "pub") == 0)
 		ks->pub = _x_to_u8_buffer(value);
@@ -167,7 +167,7 @@ void _print_key_list(FILE *fp)
 	s32 len = 0, tmp;
 
 	LIST_FOREACH(iter, _keysets)
-		if((tmp = strlen(((keyset_t *)iter->value)->name)) > len)
+		if((tmp = (s32)strlen(((keyset_t *)iter->value)->name)) > len)
 			len = tmp;
 
 	fprintf(fp, " Name");
@@ -178,7 +178,7 @@ void _print_key_list(FILE *fp)
 	{
 		keyset_t *ks = (keyset_t *)iter->value;
 		fprintf(fp, " %s", ks->name);
-		_print_align(fp, " ", len, strlen(ks->name));
+		_print_align(fp, " ", len, (s32)strlen(ks->name));
 		fprintf(fp, " %-5s 0x%04X   %s   ", _get_name(_key_types, ks->type), ks->key_revision, sce_version_to_str(ks->version));
 		if(ks->type == KEYTYPE_SELF)
 		{
@@ -215,7 +215,7 @@ BOOL keys_load(const s8 *kfile)
 		//Get next line.
 		lbuf[0] = 0;
 		fgets(lbuf, LINEBUFSIZE, fp);
-		lblen = strlen(lbuf);
+		lblen = (u32)strlen(lbuf);
 
 		//Don't parse empty lines (ignore '\n') and comment lines (starting with '#').
 		if(lblen > 1 && lbuf[0] != '#')

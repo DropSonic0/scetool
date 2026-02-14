@@ -15,7 +15,7 @@
 
 void _hexdump(FILE *fp, const char *name, u32 offset, u8 *buf, int len, BOOL print_addr)
 {
-	int i, j, align = strlen(name) + 1;
+	int i, j, align = (int)strlen(name) + 1;
 
 	fprintf(fp, "%s ", name);
 	if(print_addr == TRUE)
@@ -54,7 +54,7 @@ u8 *_read_buffer(const s8 *file, u32 *length)
 		return NULL;
 
 	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
+	size = (u32)ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	u8 *buffer = (u8 *)malloc(sizeof(u8) * size);
@@ -133,9 +133,9 @@ void _zlib_inflate(u8 *in, u64 len_in, u8 *out, u64 len_out)
 
 	inflateInit(&s);
 
-	s.avail_in = len_in;
+	s.avail_in = (uInt)len_in;
 	s.next_in = in;
-	s.avail_out = len_out;
+	s.avail_out = (uInt)len_out;
 	s.next_out = out;
 
 	inflate(&s, Z_FINISH);
@@ -154,9 +154,9 @@ void _zlib_deflate(u8 *in, u64 len_in, u8 *out, u64 len_out)
 
 	deflateInit(&s, Z_BEST_COMPRESSION);
 
-	s.avail_in = len_in;
+	s.avail_in = (uInt)len_in;
 	s.next_in = in;
-	s.avail_out = len_out;
+	s.avail_out = (uInt)len_out;
 	s.next_out = out;
 
 	deflate(&s, Z_FINISH);
@@ -206,7 +206,7 @@ void *_memdup(void *ptr, u32 size)
 u64 _x_to_u64(const s8 *hex)
 {
 	u64 t = 0, res = 0;
-	u32 len = strlen(hex);
+	u32 len = (u32)strlen(hex);
 	char c;
 
 	while(len--)
@@ -228,7 +228,7 @@ u64 _x_to_u64(const s8 *hex)
 
 u8 *_x_to_u8_buffer(const s8 *hex)
 {
-	u32 len = strlen(hex);
+	u32 len = (u32)strlen(hex);
 	s8 xtmp[3] = {0, 0, 0};
 
 	//Must be aligned to 2.

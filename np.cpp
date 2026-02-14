@@ -185,7 +185,7 @@ BOOL np_create_ci(npdrm_config_t *npconf, ci_data_npdrm_t *cinp)
 		ci_key[i] = ks_np_ci->erk[i] ^ npdrm_key[i];
 
 	//Create hash of title id and real filename.
-	len = strlen(npconf->real_fname) + 0x30;
+	len = (u32)strlen(npconf->real_fname) + 0x30;
 	cid_fname = (u8 *)malloc(sizeof(u8) * (len + 1));
 	memcpy(cid_fname, cinp->content_id, 0x30);
 	strcpy((s8 *)(cid_fname + 0x30), npconf->real_fname);
@@ -221,7 +221,7 @@ BOOL np_sign_file(s8 *fname)
 		return FALSE;
 
 	fseek(fp, 0, SEEK_END);
-	length = ftell(fp);
+	length = (u32)ftell(fp);
 
 	padding = length % 0x10;
 	if(padding > 0)

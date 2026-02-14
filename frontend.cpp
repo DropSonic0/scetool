@@ -54,7 +54,7 @@ static BOOL _is_hexdigit(s8 c)
 
 static BOOL _is_hexnumber(const s8 *str)
 {
-	u32 i, len = strlen(str);
+	u32 i, len = (u32)strlen(str);
 	for(i = 0; i < len; i++)
 		if(_is_hexdigit(str[i]) == FALSE)
 			return FALSE;
@@ -151,7 +151,7 @@ static BOOL _fill_self_config(self_config_t *sconf)
 		printf("[*] Error (Key Revision): Please provide a valid hexadecimal number.\n");
 		return FALSE;
 	}
-	sconf->key_revision = _x_to_u64(_key_rev);
+	sconf->key_revision = (u16)_x_to_u64(_key_rev);
 
 	if(_auth_id == NULL)
 	{
@@ -165,7 +165,7 @@ static BOOL _fill_self_config(self_config_t *sconf)
 		printf("[*] Error: Please specify a vendor ID.\n");
 		return FALSE;
 	}
-	sconf->vendor_id = _x_to_u64(_vendor_id);
+	sconf->vendor_id = (u32)_x_to_u64(_vendor_id);
 
 	if(_self_type == NULL)
 	{
@@ -178,7 +178,7 @@ static BOOL _fill_self_config(self_config_t *sconf)
 		printf("[*] Error: Invalid SELF type.\n");
 		return FALSE;
 	}
-	sconf->self_type = type;
+	sconf->self_type = (u32)type;
 
 	if(_app_version == NULL)
 	{
@@ -275,7 +275,7 @@ static BOOL _fill_npdrm_config(self_config_t *sconf)
 		printf("[*] Error: Invalid application type.\n");
 		return FALSE;
 	}
-	sconf->npdrm_config->app_type = type;
+	sconf->npdrm_config->app_type = (u32)type;
 
 	if(_content_id == NULL)
 	{
@@ -397,7 +397,7 @@ void frontend_decrypt(s8 *file_in, s8 *file_out)
 					else if(ctxt->sceh->header_type == SCE_HEADER_TYPE_RVK)
 					{
 						if(_write_buffer(file_out, ctxt->scebuffer + ctxt->metash[0].data_offset, 
-							ctxt->metash[0].data_size + ctxt->metash[1].data_size))
+							(u32)(ctxt->metash[0].data_size + ctxt->metash[1].data_size)))
 							printf("[*] RVK written to %s.\n", file_out);
 						else
 							printf("[*] Error: Could not write RVK.\n");
@@ -414,7 +414,7 @@ void frontend_decrypt(s8 *file_in, s8 *file_out)
 					else if(ctxt->sceh->header_type == SCE_HEADER_TYPE_SPP)
 					{
 						if(_write_buffer(file_out, ctxt->scebuffer + ctxt->metash[0].data_offset, 
-							ctxt->metash[0].data_size + ctxt->metash[1].data_size))
+							(u32)(ctxt->metash[0].data_size + ctxt->metash[1].data_size)))
 							printf("[*] SPP written to %s.\n", file_out);
 						else
 							printf("[*] Error: Could not write SPP.\n");
@@ -439,7 +439,7 @@ void frontend_encrypt(s8 *file_in, s8 *file_out)
 {
 	BOOL can_compress = FALSE;
 	self_config_t sconf;
-	sce_buffer_ctxt_t *ctxt;
+	sce_buffer_ctxt_t *ctxt = NULL;
 	u32 file_len = 0;
 	u8 *file;
 
@@ -517,6 +517,11 @@ void frontend_encrypt(s8 *file_in, s8 *file_out)
 	else if(strcmp(_file_type, "SPP") == 0)
 	{
 		printf("soon...\n");
+		return;
+	}
+	else
+	{
+		printf("[*] Error: Unknown file type %s.\n", _file_type);
 		return;
 	}
 

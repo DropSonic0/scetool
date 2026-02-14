@@ -26,7 +26,6 @@
 void _print_sce_header(FILE *fp, sce_header_t *h)
 {
 	const s8 *name;
-	const s8 *key_revision;
 
 	fprintf(fp, "[*] SCE Header:\n");
 	fprintf(fp, " Magic           0x%08X [%s]\n", h->magic, (h->magic == SCE_HEADER_MAGIC ? "OK" : "ERROR"));
@@ -320,7 +319,7 @@ void sce_compress_data(sce_buffer_ctxt_t *ctxt)
 				else
 				{
 					free(buf);
-					_LOG_VERBOSE("Skipped compression of section %03d (0x%08X >= 0x%08X)\n", i, size_comp, sec->size);
+					_LOG_VERBOSE("Skipped compression of section %03d (0x%08X >= 0x%08X)\n", i, (u32)size_comp, sec->size);
 				}
 			}
 			else
@@ -356,7 +355,7 @@ void _sce_fixup_ctxt(sce_buffer_ctxt_t *ctxt)
 	u32 i = 0, base_off, last_off;
 
 	//Set section info data.
-	base_off = ctxt->sceh->header_len;
+	base_off = (u32)ctxt->sceh->header_len;
 	LIST_FOREACH(iter, ctxt->secs)
 	{
 		//Save last offset.
@@ -378,7 +377,7 @@ void _sce_fixup_ctxt(sce_buffer_ctxt_t *ctxt)
 		ctxt->metash[i].data_size = sec->size;
 
 		//Update offset and data length.
-		base_off += sec->size;
+		base_off += (u32)sec->size;
 		ctxt->sceh->data_len = base_off - ctxt->sceh->header_len;
 		base_off = ALIGN(base_off, SCE_ALIGN);
 
@@ -957,9 +956,9 @@ s8 *sce_version_to_str(u64 version)
 
 u64 sce_str_to_version(s8 *version)
 {
-	u16 h, l;
+	u32 h, l;
 	sscanf(version, "%02X.%02X", &h, &l);
-	return ((u64)(h << 16 | l)) << 32;
+	return ((u64)((h & 0xFFFF) << 16 | (l & 0xFFFF))) << 32;
 }
 
 u64 sce_hexver_to_decver(u64 version)
