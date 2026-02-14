@@ -397,7 +397,7 @@ void frontend_decrypt(s8 *file_in, s8 *file_out)
 					else if(ctxt->sceh->header_type == SCE_HEADER_TYPE_RVK)
 					{
 						if(_write_buffer(file_out, ctxt->scebuffer + ctxt->metash[0].data_offset, 
-							ctxt->metash[0].data_size + ctxt->metash[1].data_size))
+							(u32)(ctxt->metash[0].data_size + ctxt->metash[1].data_size)))
 							printf("[*] RVK written to %s.\n", file_out);
 						else
 							printf("[*] Error: Could not write RVK.\n");
@@ -414,7 +414,7 @@ void frontend_decrypt(s8 *file_in, s8 *file_out)
 					else if(ctxt->sceh->header_type == SCE_HEADER_TYPE_SPP)
 					{
 						if(_write_buffer(file_out, ctxt->scebuffer + ctxt->metash[0].data_offset, 
-							ctxt->metash[0].data_size + ctxt->metash[1].data_size))
+							(u32)(ctxt->metash[0].data_size + ctxt->metash[1].data_size)))
 							printf("[*] SPP written to %s.\n", file_out);
 						else
 							printf("[*] Error: Could not write SPP.\n");

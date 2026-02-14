@@ -26,7 +26,6 @@
 void _print_sce_header(FILE *fp, sce_header_t *h)
 {
 	const s8 *name;
-	const s8 *key_revision;
 
 	fprintf(fp, "[*] SCE Header:\n");
 	fprintf(fp, " Magic           0x%08X [%s]\n", h->magic, (h->magic == SCE_HEADER_MAGIC ? "OK" : "ERROR"));
@@ -378,7 +377,7 @@ void _sce_fixup_ctxt(sce_buffer_ctxt_t *ctxt)
 		ctxt->metash[i].data_size = sec->size;
 
 		//Update offset and data length.
-		base_off += sec->size;
+		base_off += (u32)sec->size;
 		ctxt->sceh->data_len = base_off - ctxt->sceh->header_len;
 		base_off = ALIGN(base_off, SCE_ALIGN);
 

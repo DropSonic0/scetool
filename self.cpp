@@ -612,7 +612,7 @@ BOOL self_write_to_elf(sce_buffer_ctxt_t *ctxt, const s8 *elf_out)
 					u8 *data = (u8 *)malloc(ph[msh[i].index].p_filesz);
 
 					_zlib_inflate(ctxt->scebuffer + msh[i].data_offset, msh[i].data_size, data, ph[msh[i].index].p_filesz);
-					fseek(fp, ph[msh[i].index].p_offset, SEEK_SET);
+					fseek(fp, (s64)ph[msh[i].index].p_offset, SEEK_SET);
 					fwrite(data, sizeof(u8), ph[msh[i].index].p_filesz, fp);
 
 					free(data);
@@ -620,7 +620,7 @@ BOOL self_write_to_elf(sce_buffer_ctxt_t *ctxt, const s8 *elf_out)
 				else
 				{
 					_es_elf64_phdr(&ph[msh[i].index]);
-					fseek(fp, ph[msh[i].index].p_offset, SEEK_SET);
+					fseek(fp, (s64)ph[msh[i].index].p_offset, SEEK_SET);
 					fwrite(ctxt->scebuffer + msh[i].data_offset, sizeof(u8), msh[i].data_size, fp);
 				}
 			}
@@ -630,7 +630,7 @@ BOOL self_write_to_elf(sce_buffer_ctxt_t *ctxt, const s8 *elf_out)
 		if(ctxt->self.selfh->shdr_offset != 0)
 		{
 			Elf64_Shdr *sh = (Elf64_Shdr *)(ctxt->scebuffer + ctxt->self.selfh->shdr_offset);
-			fseek(fp, ceh.e_shoff, SEEK_SET);
+			fseek(fp, (s64)ceh.e_shoff, SEEK_SET);
 			fwrite(sh, sizeof(Elf64_Shdr), ceh.e_shnum, fp);
 		}
 	}
@@ -1000,7 +1000,7 @@ static BOOL _build_self_64(sce_buffer_ctxt_t *ctxt, self_config_t *sconf)
 		_es_elf64_phdr(&phdrs[i]);
 
 		//Add section info.
-		_add_phdr_section(ctxt, phdrs[i].p_type, phdrs[i].p_filesz, i);
+		_add_phdr_section(ctxt, phdrs[i].p_type, (u32)phdrs[i].p_filesz, i);
 
 		//TODO: what if the size differs, why skip other program headers?
 		//Fill metadata section header but skip identical program header offsets.
@@ -1015,13 +1015,13 @@ static BOOL _build_self_64(sce_buffer_ctxt_t *ctxt, self_config_t *sconf)
 		}
 		else
 		{
-			void *sec = _memdup(ctxt->makeself->elf + phdrs[i].p_offset, phdrs[i].p_filesz);
+			void *sec = _memdup(ctxt->makeself->elf + phdrs[i].p_offset, (u32)phdrs[i].p_filesz);
 			//PPU sections may be compressed.
-			sce_add_data_section(ctxt, sec, phdrs[i].p_filesz, TRUE);
+			sce_add_data_section(ctxt, sec, (u32)phdrs[i].p_filesz, TRUE);
 			sce_set_metash(ctxt, METADATA_SECTION_TYPE_PHDR, TRUE /*(phdrs[i].p_type == PT_LOAD || phdrs[i].p_type == PT_PS3_PRX_RELOC || phdrs[i].p_type == 0x700000A8) ? TRUE : FALSE*/, i - skip);
 		}
 
-		loff = phdrs[i].p_offset;
+		loff = (u32)phdrs[i].p_offset;
 	}
 
 	//Section info count.
@@ -1031,7 +1031,7 @@ static BOOL _build_self_64(sce_buffer_ctxt_t *ctxt, self_config_t *sconf)
 
 	//Add a section for the section headers.
 	if(sconf->add_shdrs == TRUE)
-		if(_add_shdrs_section(ctxt, i - skip) == TRUE)
+		if(_add_shdrs_section(ctxt, (u32)(i - skip)) == TRUE)
 			i++;
 
 	//Metadata.

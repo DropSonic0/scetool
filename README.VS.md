@@ -10,9 +10,10 @@ This project has been set up with a Visual Studio 2019 solution (`scetool.sln`) 
 2. Link against `zlib.lib`.
 
 You will need to provide `zlib.lib`. You can:
+- **Fastest way**: Download a precompiled `zlib.lib` and place it directly in the project root folder (next to `scetool.sln`). The project is configured to look for it there.
 - Use a package manager like [vcpkg](https://github.com/microsoft/vcpkg): `vcpkg install zlib:x64-windows` (or `x86-windows`).
 - Use NuGet to install a zlib package.
-- Manually download/build zlib and add the directory containing `zlib.lib` to the project's **Library Directories**.
+- Manually download/build zlib and add its path to the project's **Library Directories**.
 
 ## Configuration
 
