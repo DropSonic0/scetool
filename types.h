@@ -16,6 +16,9 @@ typedef unsigned short u16;
 typedef int s32;
 typedef unsigned int u32;
 #if defined(_WIN32) && defined(_MSC_VER)
+#include <io.h>
+#define strdup _strdup
+#define access _access
 typedef __int64 s64;
 typedef unsigned __int64 u64;
 #else

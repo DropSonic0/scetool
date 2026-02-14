@@ -320,7 +320,7 @@ void sce_compress_data(sce_buffer_ctxt_t *ctxt)
 				else
 				{
 					free(buf);
-					_LOG_VERBOSE("Skipped compression of section %03d (0x%08X >= 0x%08X)\n", i, size_comp, sec->size);
+					_LOG_VERBOSE("Skipped compression of section %03d (0x%08X >= 0x%08X)\n", i, (u32)size_comp, sec->size);
 				}
 			}
 			else
@@ -957,9 +957,9 @@ s8 *sce_version_to_str(u64 version)
 
 u64 sce_str_to_version(s8 *version)
 {
-	u16 h, l;
+	u32 h, l;
 	sscanf(version, "%02X.%02X", &h, &l);
-	return ((u64)(h << 16 | l)) << 32;
+	return ((u64)((h & 0xFFFF) << 16 | (l & 0xFFFF))) << 32;
 }
 
 u64 sce_hexver_to_decver(u64 version)
