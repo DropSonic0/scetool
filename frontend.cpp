@@ -507,7 +507,7 @@ void frontend_encrypt(s8 *file_in, s8 *file_out)
 		}
 
 		//SPU SELFs may not be compressed.
-		if(!(sconf.self_type == SELF_TYPE_LDR || sconf.self_type == SELF_TYPE_ISO))
+		if(!(sconf.self_type == SELF_TYPE_LDR || sconf.self_type == SELF_TYPE_ISO || sconf.spu_type == TRUE))
 			can_compress = TRUE;
 	}
 	else if(strcmp(_file_type, "RVK") == 0)
