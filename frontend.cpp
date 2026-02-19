@@ -34,6 +34,7 @@ extern s8 *_self_type;
 extern s8 *_app_version;
 extern s8 *_fw_version;
 extern s8 *_add_shdrs;
+extern s8 *_spu_type;
 extern s8 *_ctrl_flags;
 extern s8 *_cap_flags;
 #ifdef CONFIG_CUSTOM_INDIV_SEED
@@ -195,6 +196,11 @@ static BOOL _fill_self_config(self_config_t *sconf)
 	if(_add_shdrs != NULL)
 		if(strcmp(_add_shdrs, "FALSE") == 0)
 			sconf->add_shdrs = FALSE;
+
+	sconf->spu_type = FALSE;
+	if(_spu_type != NULL)
+		if(strcmp(_spu_type, "YES") == 0)
+			sconf->spu_type = TRUE;
 
 	sconf->skip_sections = TRUE;
 	if(_skip_sections != NULL)

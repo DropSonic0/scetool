@@ -31,6 +31,8 @@ typedef struct _self_config
 	BOOL compress_data;
 	/*! Skip sections. */
 	BOOL skip_sections;
+	/*! SPU type. */
+	BOOL spu_type;
 
 	/*! Key revision. */
 	u16 key_revision;

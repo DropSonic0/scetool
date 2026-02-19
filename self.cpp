@@ -1076,7 +1076,7 @@ BOOL self_build_self(sce_buffer_ctxt_t *ctxt, self_config_t *sconf)
 
 	//Check for 32 bit or 64 bit ELF.
 	const u8 *eident = (const u8*)ctxt->makeself->elf;
-	if(sconf->self_type == SELF_TYPE_LDR || sconf->self_type == SELF_TYPE_ISO || eident[EI_CLASS] == ELFCLASS32)
+	if(sconf->self_type == SELF_TYPE_LDR || sconf->self_type == SELF_TYPE_ISO || eident[EI_CLASS] == ELFCLASS32 || sconf->spu_type == TRUE)
 		return _build_self_32(ctxt, sconf);
 	return _build_self_64(ctxt, sconf);
 }
