@@ -65,6 +65,7 @@ s8 *_self_type = NULL;
 s8 *_app_version = NULL;
 s8 *_fw_version = NULL;
 s8 *_add_shdrs = NULL;
+s8 *_spu_type = NULL;
 s8 *_ctrl_flags = NULL;
 s8 *_cap_flags = NULL;
 #ifdef CONFIG_CUSTOM_INDIV_SEED
@@ -96,6 +97,7 @@ static s8 *_file_out = NULL;
 #define VAL_APP_VERSION 'A'
 #define VAL_FW_VERSION '6'
 #define VAL_ADD_SHDRS '7'
+#define VAL_SPU_TYPE 'S'
 #define VAL_CTRL_FLAGS '8'
 #define VAL_CAP_FLAGS '9'
 #ifdef CONFIG_CUSTOM_INDIV_SEED
@@ -130,6 +132,7 @@ static struct option options[] =
 	{"self-app-version", ARG_REQ, NULL, VAL_APP_VERSION},
 	{"self-fw-version", ARG_REQ, NULL, VAL_FW_VERSION},
 	{"self-add-shdrs", ARG_REQ, NULL, VAL_ADD_SHDRS},
+	{"spu-type", ARG_REQ, NULL, VAL_SPU_TYPE},
 	{"self-ctrl-flags", ARG_REQ, NULL, VAL_CTRL_FLAGS},
 	{"self-cap-flags", ARG_REQ, NULL, VAL_CAP_FLAGS},
 #ifdef CONFIG_CUSTOM_INDIV_SEED
@@ -182,6 +185,7 @@ static void print_usage()
 	printf(" -A, --self-app-version e.g. 0001000000000000 Application Version\n");
 	printf(" -6, --self-fw-version  e.g. 0003004100000000 Firmware Version\n");
 	printf(" -7, --self-add-shdrs   TRUE(default)/FALSE   Whether to add ELF shdrs or not.\n");
+	printf(" -S, --spu-type         YES/NO(default)       Whether to treat as SPU or not.\n");
 	printf(" -8, --self-ctrl-flags  32 bytes              Override control flags.\n");
 	printf(" -9, --self-cap-flags   32 bytes              Override capability flags.\n");
 #ifdef CONFIG_CUSTOM_INDIV_SEED
@@ -204,9 +208,9 @@ static void parse_args(int argc, char **argv)
 	char c;
 
 #ifdef CONFIG_CUSTOM_INDIV_SEED
-	while((c = getopt_long(argc, argv, "hki:d:e:vrt:0:1:s:2:m:K:3:4:5:A:6:7:8:9:a:b:c:f:l:g:j:", options, NULL)) != -1)
+	while((c = getopt_long(argc, argv, "hki:d:e:vrt:0:1:s:2:m:K:3:4:5:A:6:7:S:8:9:a:b:c:f:l:g:j:", options, NULL)) != -1)
 #else
-	while((c = getopt_long(argc, argv, "hki:d:e:vrt:0:1:s:2:m:K:3:4:5:A:6:7:8:9:b:c:f:l:g:j:", options, NULL)) != -1)
+	while((c = getopt_long(argc, argv, "hki:d:e:vrt:0:1:s:2:m:K:3:4:5:A:6:7:S:8:9:b:c:f:l:g:j:", options, NULL)) != -1)
 #endif
 	{
 		switch(c)
@@ -285,6 +289,9 @@ static void parse_args(int argc, char **argv)
 			break;
 		case VAL_ADD_SHDRS:
 			_add_shdrs = optarg;
+			break;
+		case VAL_SPU_TYPE:
+			_spu_type = optarg;
 			break;
 		case VAL_CTRL_FLAGS:
 			_ctrl_flags = optarg;
