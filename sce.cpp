@@ -564,8 +564,8 @@ static void _sce_build_header(sce_buffer_ctxt_t *ctxt)
 	u32 i;
 
 	//Allocate header buffer.
-	ctxt->scebuffer = (u8*)malloc(sizeof(u8) * ctxt->sceh->header_len);
-	memset(ctxt->scebuffer, 0, sizeof(u8) * ctxt->sceh->header_len);
+	ctxt->scebuffer = (u8*)malloc((size_t)(sizeof(u8) * ctxt->sceh->header_len));
+	memset(ctxt->scebuffer, 0, (size_t)(sizeof(u8) * ctxt->sceh->header_len));
 
 	//SCE header.
 	_copy_es_sce_header((sce_header_t *)(ctxt->scebuffer + ctxt->off_sceh), ctxt->sceh);
@@ -660,7 +660,7 @@ static BOOL _sce_sign_header(sce_buffer_ctxt_t *ctxt, keyset_t *ks)
 		return FALSE;
 
 	//Generate header hash.
-	sha1(ctxt->scebuffer, ctxt->metah->sig_input_length, hash);
+	sha1(ctxt->scebuffer, (size_t)ctxt->metah->sig_input_length, hash);
 
 	//Generate signature.
 	ecdsa_set_curve(ks->ctype);
@@ -726,7 +726,7 @@ static BOOL _sce_encrypt_header(sce_buffer_ctxt_t *ctxt, u8 *keyset)
 	aes_setkey_enc(&aes_ctxt, ctxt->metai->key, METADATA_INFO_KEYBITS);
 	memcpy(iv, ctxt->metai->iv, 0x10);
 	aes_crypt_ctr(&aes_ctxt, 
-		ctxt->sceh->header_len - (sizeof(sce_header_t) + ctxt->sceh->metadata_offset + sizeof(metadata_info_t)), 
+		(size_t)(ctxt->sceh->header_len - (sizeof(sce_header_t) + ctxt->sceh->metadata_offset + sizeof(metadata_info_t))),
 		&nc_off, iv, sblk, ptr, ptr);
 
 	//Encrypt metadata info.
@@ -759,7 +759,7 @@ static void _sce_encrypt_data(sce_buffer_ctxt_t *ctxt)
 		{
 			memcpy(iv, ctxt->keys + ctxt->metash[i].iv_index * 0x10, 0x10);
 			aes_setkey_enc(&aes_ctxt, ctxt->keys + ctxt->metash[i].key_index * 0x10, 128);
-			aes_crypt_ctr(&aes_ctxt, sec->size, &nc_off, iv, buf, (u8 *)sec->buffer, (u8 *)sec->buffer);
+			aes_crypt_ctr(&aes_ctxt, (size_t)sec->size, &nc_off, iv, buf, (u8 *)sec->buffer, (u8 *)sec->buffer);
 		}
 
 		i++;
@@ -789,14 +789,14 @@ BOOL sce_write_ctxt(sce_buffer_ctxt_t *ctxt, s8 *fname)
 		return FALSE;
 
 	//Write SCE file header.
-	fwrite(ctxt->scebuffer, sizeof(u8), ctxt->sceh->header_len, fp);
+	fwrite(ctxt->scebuffer, sizeof(u8), (size_t)ctxt->sceh->header_len, fp);
 
 	//Write SCE file sections.
 	LIST_FOREACH(iter, ctxt->secs)
 	{
 		sce_section_ctxt_t *sec = (sce_section_ctxt_t *)iter->value;
-		fseek(fp, sec->offset, SEEK_SET);
-		fwrite(sec->buffer, sizeof(u8), sec->size, fp);
+		fseek(fp, (long)sec->offset, SEEK_SET);
+		fwrite(sec->buffer, sizeof(u8), (size_t)sec->size, fp);
 	}
 
 	fclose(fp);
@@ -853,7 +853,7 @@ BOOL sce_decrypt_header(sce_buffer_ctxt_t *ctxt, u8 *metadata_info, u8 *keyset)
 	nc_off = 0;
 	aes_setkey_enc(&aes_ctxt, ctxt->metai->key, METADATA_INFO_KEYBITS);
 	aes_crypt_ctr(&aes_ctxt, 
-		ctxt->sceh->header_len - (sizeof(sce_header_t) + ctxt->sceh->metadata_offset + sizeof(metadata_info_t)), 
+		(size_t)(ctxt->sceh->header_len - (sizeof(sce_header_t) + ctxt->sceh->metadata_offset + sizeof(metadata_info_t))),
 		&nc_off, ctxt->metai->iv, sblk, (u8 *)ctxt->metah, (u8 *)ctxt->metah);
 
 	//Fixup headers.
@@ -914,7 +914,7 @@ BOOL sce_decrypt_data(sce_buffer_ctxt_t *ctxt)
 				memcpy(iv, ctxt->keys + ctxt->metash[i].iv_index * 0x10, 0x10);
 				aes_setkey_enc(&aes_ctxt, ctxt->keys + ctxt->metash[i].key_index * 0x10, 128);
 				u8 *ptr = ctxt->scebuffer + ctxt->metash[i].data_offset;
-				aes_crypt_ctr(&aes_ctxt, ctxt->metash[i].data_size, &nc_off, iv, buf, ptr, ptr);
+				aes_crypt_ctr(&aes_ctxt, (size_t)ctxt->metash[i].data_size, &nc_off, iv, buf, ptr, ptr);
 			}
 		}
 	}
