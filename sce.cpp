@@ -275,7 +275,7 @@ void sce_add_data_section(sce_buffer_ctxt_t *ctxt, void *buffer, u32 size, BOOL 
 void sce_set_metash(sce_buffer_ctxt_t *ctxt, u32 type, BOOL encrypted, u32 idx)
 {
 	ctxt->metash[idx].type = type;
-	ctxt->metash[idx].index = (type == METADATA_SECTION_TYPE_PHDR ? idx : type == METADATA_SECTION_TYPE_SHDR ? idx + 1 : idx);
+	ctxt->metash[idx].index = idx;
 	ctxt->metash[idx].hashed = METADATA_SECTION_HASHED;
 	ctxt->metash[idx].encrypted = (encrypted == TRUE ? METADATA_SECTION_ENCRYPTED : METADATA_SECTION_NOT_ENCRYPTED);
 	ctxt->metash[idx].compressed = METADATA_SECTION_NOT_COMPRESSED;
@@ -843,7 +843,7 @@ BOOL sce_decrypt_header(sce_buffer_ctxt_t *ctxt, u8 *metadata_info, u8 *keyset)
 	else
 	{
 		//Copy provided metadata info over SELF metadata.
-		memcpy((u8 *)ctxt->metai, metadata_info, sizeof(metadata_info));
+		memcpy((u8 *)ctxt->metai, metadata_info, sizeof(metadata_info_t));
 	}
 
 	if(ctxt->metai->key_pad[0] != 0x00 || ctxt->metai->iv_pad[0] != 0x00)
