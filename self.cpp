@@ -574,8 +574,8 @@ BOOL self_write_to_elf(sce_buffer_ctxt_t *ctxt, const s8 *elf_out)
 			if(msh[i].type == METADATA_SECTION_TYPE_PHDR)
 			{
 				_es_elf32_phdr(&ph[msh[i].index]);
-				fseek(fp, ph[msh[i].index].p_offset, SEEK_SET);
-				fwrite(ctxt->scebuffer + msh[i].data_offset, sizeof(u8), msh[i].data_size, fp);
+				fseek(fp, (long)ph[msh[i].index].p_offset, SEEK_SET);
+				fwrite(ctxt->scebuffer + msh[i].data_offset, sizeof(u8), (size_t)msh[i].data_size, fp);
 			}
 		}		
 
@@ -609,19 +609,19 @@ BOOL self_write_to_elf(sce_buffer_ctxt_t *ctxt, const s8 *elf_out)
 				if(msh[i].compressed == METADATA_SECTION_COMPRESSED)
 				{
 					_es_elf64_phdr(&ph[msh[i].index]);
-					u8 *data = (u8 *)malloc(ph[msh[i].index].p_filesz);
+					u8 *data = (u8 *)malloc((size_t)ph[msh[i].index].p_filesz);
 
-					_zlib_inflate(ctxt->scebuffer + msh[i].data_offset, msh[i].data_size, data, ph[msh[i].index].p_filesz);
-					fseek(fp, (s64)ph[msh[i].index].p_offset, SEEK_SET);
-					fwrite(data, sizeof(u8), ph[msh[i].index].p_filesz, fp);
+					_zlib_inflate(ctxt->scebuffer + msh[i].data_offset, (size_t)msh[i].data_size, data, (size_t)ph[msh[i].index].p_filesz);
+					fseek(fp, (long)ph[msh[i].index].p_offset, SEEK_SET);
+					fwrite(data, sizeof(u8), (size_t)ph[msh[i].index].p_filesz, fp);
 
 					free(data);
 				}
 				else
 				{
 					_es_elf64_phdr(&ph[msh[i].index]);
-					fseek(fp, (s64)ph[msh[i].index].p_offset, SEEK_SET);
-					fwrite(ctxt->scebuffer + msh[i].data_offset, sizeof(u8), msh[i].data_size, fp);
+					fseek(fp, (long)ph[msh[i].index].p_offset, SEEK_SET);
+					fwrite(ctxt->scebuffer + msh[i].data_offset, sizeof(u8), (size_t)msh[i].data_size, fp);
 				}
 			}
 		}		
